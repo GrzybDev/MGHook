@@ -1,6 +1,6 @@
 #pragma once
 
-#pragma comment(linker, "/EXPORT:MFCreateSourceReaderFromMediaSource=_Real_MFCreateSourceReaderFromMediaSource")
+#pragma comment(linker, "/EXPORT:MFCreateSourceReaderFromMediaSource=Real_MFCreateSourceReaderFromMediaSource")
 
 using fn_MFCreateSourceReaderFromMediaSource = HRESULT(WINAPI*)(void*, void*, void**);
 static fn_MFCreateSourceReaderFromMediaSource real_MFCreateSourceReaderFromMediaSource = nullptr;
@@ -23,9 +23,10 @@ static void LoadRealDll()
 	}
 
 	real_MFCreateSourceReaderFromMediaSource =
-		(fn_MFCreateSourceReaderFromMediaSource)GetProcAddress(hRealDll, "MFCreateSourceReaderFromMediaSource");
+		reinterpret_cast<fn_MFCreateSourceReaderFromMediaSource>(
+			GetProcAddress(hRealDll, "MFCreateSourceReaderFromMediaSource"));
 }
 
 
 extern "C" __declspec(dllexport)
-HRESULT WINAPI _Real_MFCreateSourceReaderFromMediaSource(void* pMediaSource, void* pAttributes, void** ppSourceReader);
+HRESULT WINAPI Real_MFCreateSourceReaderFromMediaSource(void* pMediaSource, void* pAttributes, void** ppSourceReader);
