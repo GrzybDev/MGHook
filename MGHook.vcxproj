@@ -13,12 +13,14 @@
   <ItemGroup>
     <ClInclude Include="src\framework.hpp" />
     <ClInclude Include="src\helpers.hpp" />
+    <ClInclude Include="src\logger.hpp" />
     <ClInclude Include="src\MFReadWrite.hpp" />
     <ClInclude Include="src\pch.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\dllmain.cpp" />
     <ClCompile Include="src\helpers.cpp" />
+    <ClCompile Include="src\logger.cpp" />
     <ClCompile Include="src\pch.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

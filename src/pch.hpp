@@ -11,5 +11,6 @@
 #include "framework.hpp"
 #include "MFReadWrite.hpp"
 #include "helpers.hpp"
+#include "logger.hpp"
 
 #endif //PCH_H

@@ -15,11 +15,12 @@ HRESULT WINAPI _Real_MFCreateSourceReaderFromMediaSource(void* pMediaSource, voi
 
 void PrintMotd()
 {
-	printf("Metal Gear 1 / 2 hook %s by Marek Grzyb (@GrzybDev)\n", VERSION);
-	printf("Homepage: https://grzyb.dev/project/MGHook\n");
-	printf("Source code: https://github.com/GrzybDev/MGHook\n");
-	printf("Noticed a bug? Fill a bug report here: https://github.com/GrzybDev/MGHook/issues\n");
-	printf("Licensed under GNU Lesser General Public License v3, Contributions of any kind welcome!");
+	Logger::Log("Metal Gear 1 / 2 hook v%s by Marek Grzyb (@GrzybDev)\n", VERSION);
+	Logger::Log("Homepage: https://grzyb.dev/project/MGHook\n");
+	Logger::Log("Source code: https://github.com/GrzybDev/MGHook\n");
+	Logger::Log("Noticed a bug? Fill a bug report here: https://github.com/GrzybDev/MGHook/issues\n");
+	Logger::Log("Licensed under GNU Lesser General Public License v3, Contributions of any kind welcome!");
+	Logger::Log("\n\n");
 }
 
 BOOL APIENTRY DllMain(HMODULE hModule,
@@ -31,7 +32,7 @@ BOOL APIENTRY DllMain(HMODULE hModule,
 	{
 		DisableThreadLibraryCalls(hModule);
 
-		DebugConsole();
+		Logger::Init(hModule);
 		PrintMotd();
 
 		LoadRealDll();

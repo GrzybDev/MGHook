@@ -1,3 +1,3 @@
 #pragma once
 
-void DebugConsole();
+std::wstring GetDllDirectory(HMODULE hModule);
