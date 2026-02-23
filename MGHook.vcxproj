@@ -16,6 +16,7 @@
     <ClInclude Include="src\helpers.hpp" />
     <ClInclude Include="src\logger.hpp" />
     <ClInclude Include="src\MFReadWrite.hpp" />
+    <ClInclude Include="src\patches.hpp" />
     <ClInclude Include="src\pch.hpp" />
     <ClInclude Include="src\translations.hpp" />
   </ItemGroup>
@@ -24,6 +25,7 @@
     <ClCompile Include="src\dllmain.cpp" />
     <ClCompile Include="src\helpers.cpp" />
     <ClCompile Include="src\logger.cpp" />
+    <ClCompile Include="src\patches.cpp" />
     <ClCompile Include="src\pch.cpp" />
     <ClCompile Include="src\translations.cpp" />
   </ItemGroup>

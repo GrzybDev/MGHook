@@ -1,6 +1,8 @@
 // dllmain.cpp : Defines the entry point for the DLL application.
 #include "pch.hpp"
 
+#include "patches.hpp"
+
 extern "C" __declspec(dllexport)
 HRESULT WINAPI Real_MFCreateSourceReaderFromMediaSource(void* pMediaSource, void* pAttributes, void** ppSourceReader)
 {
@@ -36,6 +38,8 @@ BOOL APIENTRY DllMain(const HMODULE hModule,
 		PrintMotd();
 
 		LoadRealDll();
+
+		PatchStrings(hModule);
 	}
 
 	return TRUE;
