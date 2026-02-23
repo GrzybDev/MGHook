@@ -13,5 +13,6 @@
 #include "helpers.hpp"
 #include "logger.hpp"
 #include "charmap.hpp"
+#include "translations.hpp"
 
 #endif //PCH_H

@@ -30,6 +30,9 @@
     <ClInclude Include="src\MFReadWrite.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\translations.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="src\charmap.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -45,6 +48,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\logger.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\translations.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\charmap.cpp">

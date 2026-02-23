@@ -17,6 +17,7 @@
     <ClInclude Include="src\logger.hpp" />
     <ClInclude Include="src\MFReadWrite.hpp" />
     <ClInclude Include="src\pch.hpp" />
+    <ClInclude Include="src\translations.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\charmap.cpp" />
@@ -24,6 +25,7 @@
     <ClCompile Include="src\helpers.cpp" />
     <ClCompile Include="src\logger.cpp" />
     <ClCompile Include="src\pch.cpp" />
+    <ClCompile Include="src\translations.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>18.0</VCProjectVersion>
