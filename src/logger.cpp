@@ -8,14 +8,14 @@ Logger& Logger::GetInstance()
 	return instance;
 }
 
-void Logger::Init(HMODULE hModule)
+void Logger::Init(const HMODULE hModule)
 {
 	Logger& instance = GetInstance();
 
-	std::ifstream debugFile(".debug");
+	const std::ifstream debugFile(".debug");
 	instance.isConsoleEnabled = debugFile.good();
 
-	std::ifstream logFile(".debug_log");
+	const std::ifstream logFile(".debug_log");
 	instance.isFileLoggingEnabled = logFile.good();
 
 	if (instance.isConsoleEnabled)
@@ -51,10 +51,10 @@ void Logger::InitConsole()
 	// Redirect wide standard error, output to console
 	// std::wcout, std::wclog, std::wcerr, std::wcin
 	const HANDLE hConOut = CreateFile(_T("CONOUT$"), GENERIC_READ | GENERIC_WRITE,
-		FILE_SHARE_READ | FILE_SHARE_WRITE, nullptr, OPEN_EXISTING,
-		FILE_ATTRIBUTE_NORMAL, nullptr);
+	                                  FILE_SHARE_READ | FILE_SHARE_WRITE, nullptr, OPEN_EXISTING,
+	                                  FILE_ATTRIBUTE_NORMAL, nullptr);
 	const HANDLE hConIn = CreateFile(_T("CONIN$"), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE,
-		nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
+	                                 nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
 
 	SetStdHandle(STD_OUTPUT_HANDLE, hConOut);
 	SetStdHandle(STD_ERROR_HANDLE, hConOut);
@@ -76,14 +76,17 @@ void Logger::Log(const char* format, ...)
 	if (instance.isConsoleEnabled)
 	{
 		vprintf(format, args);
+		printf("\n");
 	}
 
 	if (instance.isFileLoggingEnabled)
 	{
 		FILE* file = nullptr;
+
 		if (_wfopen_s(&file, instance.logFilePath.c_str(), L"a") == 0 && file)
 		{
 			vfprintf(file, format, args);
+			fprintf(file, "\n");
 			fclose(file);
 		}
 	}
