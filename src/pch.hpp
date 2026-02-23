@@ -12,5 +12,6 @@
 #include "MFReadWrite.hpp"
 #include "helpers.hpp"
 #include "logger.hpp"
+#include "charmap.hpp"
 
 #endif //PCH_H

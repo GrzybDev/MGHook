@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\charmap.hpp" />
     <ClInclude Include="src\framework.hpp" />
     <ClInclude Include="src\helpers.hpp" />
     <ClInclude Include="src\logger.hpp" />
@@ -18,6 +19,7 @@
     <ClInclude Include="src\pch.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\charmap.cpp" />
     <ClCompile Include="src\dllmain.cpp" />
     <ClCompile Include="src\helpers.cpp" />
     <ClCompile Include="src\logger.cpp" />
