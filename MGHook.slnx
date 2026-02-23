@@ -2,5 +2,5 @@
   <Configurations>
     <Platform Name="x64" />
   </Configurations>
-  <Project Path="MGHook.vcxproj" />
+  <Project Path="MGHook.vcxproj" Id="e26d1e09-b224-4cff-b49f-719086e5c201" />
 </Solution>
