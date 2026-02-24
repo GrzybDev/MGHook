@@ -78,7 +78,7 @@ TranslationResult ApplyTranslations(const std::vector<TranslationEntry>& transla
 		}
 
 		// Apply charmap substitutions to the replacement text (UTF-8)
-		std::string replaceFinal = ApplyCharMap(replacement);
+		std::string replaceFinal = ApplyCharMap(replacement, foundRegion);
 		const char* replaceData = replaceFinal.c_str();
 		size_t replaceLen = replaceFinal.length();
 

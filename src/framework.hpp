@@ -56,6 +56,7 @@ struct CharMapEntry
 };
 
 static std::vector<CharMapEntry> charMap;
+static std::unordered_map<int, std::vector<CharMapEntry>> regionCharMaps;
 static std::vector<char*> allocatedStrings;
 
 struct TranslationEntry

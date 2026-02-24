@@ -1,21 +1,16 @@
 #include "pch.hpp"
 #include "charmap.hpp"
 
-void LoadCharSubstitutionMap(const std::wstring& path)
+static std::vector<CharMapEntry> ParseCharMapFile(const std::wstring& path)
 {
+	std::vector<CharMapEntry> entries;
 	std::ifstream file(path);
 
 	if (!file.is_open())
-	{
-		Logger::Log(
-			"[CharMap] No charmap loaded (file missing or doesn't contain charmap). (Tried path: %s)",
-			WideToUtf8(path).c_str());
-		return;
-	}
+		return entries;
 
 	std::string line;
 	bool firstLine = true;
-	int count = 0;
 
 	while (std::getline(file, line))
 	{
@@ -67,21 +62,50 @@ void LoadCharSubstitutionMap(const std::wstring& path)
 		if (wlenFrom != 1 || wlenTo != 1)
 			continue;
 
-		charMap.push_back({.from = std::move(fromPart), .to = std::move(toPart)});
-		++count;
+		entries.push_back({.from = std::move(fromPart), .to = std::move(toPart)});
 	}
 
-	Logger::Log("[CharMap] Loaded %d char substitution(s).", count);
+	return entries;
 }
 
-std::string ApplyCharMap(const std::string& utf8Text)
+void LoadCharSubstitutionMap(const std::wstring& path)
 {
-	if (charMap.empty())
+	auto entries = ParseCharMapFile(path);
+
+	if (entries.empty())
+	{
+		Logger::Log(
+			"[CharMap] No global charmap loaded (file missing or empty). (Tried path: %s)",
+			WideToUtf8(path).c_str());
+		return;
+	}
+
+	charMap = std::move(entries);
+	Logger::Log("[CharMap] Loaded %d global char substitution(s).", static_cast<int>(charMap.size()));
+}
+
+void LoadRegionCharSubstitutionMap(const std::wstring& path, int regionIndex)
+{
+	auto entries = ParseCharMapFile(path);
+
+	if (entries.empty())
+		return;
+
+	Logger::Log("[CharMap] Loaded %d char substitution(s) for region %s.",
+	            static_cast<int>(entries.size()),
+	            STRING_REGIONS[regionIndex].name);
+
+	regionCharMaps[regionIndex] = std::move(entries);
+}
+
+static std::string ApplyCharMapEntries(const std::string& utf8Text, const std::vector<CharMapEntry>& entries)
+{
+	if (entries.empty())
 		return utf8Text;
 
 	std::string result = utf8Text;
 
-	for (const auto& [from, to] : charMap)
+	for (const auto& [from, to] : entries)
 	{
 		std::string out;
 		size_t pos = 0;
@@ -103,6 +127,20 @@ std::string ApplyCharMap(const std::string& utf8Text)
 		}
 
 		result = std::move(out);
+	}
+
+	return result;
+}
+
+std::string ApplyCharMap(const std::string& utf8Text, int regionIndex)
+{
+	std::string result = ApplyCharMapEntries(utf8Text, charMap);
+
+	if (regionIndex >= 0)
+	{
+		const auto it = regionCharMaps.find(regionIndex);
+		if (it != regionCharMaps.end())
+			result = ApplyCharMapEntries(result, it->second);
 	}
 
 	return result;

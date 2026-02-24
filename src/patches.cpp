@@ -88,9 +88,17 @@ void PatchStrings(const HMODULE hModule)
 		            rvaEnd - rvaStart);
 	}
 
-	// Load translations
+	// Load charmaps
 	const std::wstring dllDir = GetDllDirectory(hModule);
 	LoadCharSubstitutionMap(dllDir + L"charmap.txt");
+
+	for (int i = 0; i < NUM_STRING_REGIONS; ++i)
+	{
+		std::wstring regionFile = dllDir + L"charmap_" + Utf8ToWide(STRING_REGIONS[i].name) + L".txt";
+		LoadRegionCharSubstitutionMap(regionFile, i);
+	}
+
+	// Load translations
 	const auto translations = LoadTranslations(dllDir + L"translations.txt");
 
 	if (translations.empty())
