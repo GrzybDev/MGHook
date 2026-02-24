@@ -49,46 +49,5 @@ static constexpr StringRegion STRING_REGIONS[] = {
 
 static constexpr int NUM_STRING_REGIONS = std::size(STRING_REGIONS);
 
-struct CharMapEntry
-{
-	std::string from; // UTF-8 bytes of source character
-	std::string to; // UTF-8 bytes of replacement character
-};
-
-static std::vector<CharMapEntry> charMap;
-static std::unordered_map<int, std::vector<CharMapEntry>> regionCharMaps;
-static std::vector<char*> allocatedStrings;
-
-struct TranslationEntry
-{
-	std::string original; // key as raw UTF-8 bytes
-	std::string replacement; // value as raw UTF-8 bytes
-};
-
-struct AddressTuple
-{
-	uintptr_t rdataStart;
-	uintptr_t dataStart;
-	uintptr_t baseAdr;
-};
-
-struct TranslationResult
-{
-	int patchedCount;
-	int skippedCount;
-	int totalPtrsPatched;
-};
-
 static constexpr DWORD FONT_GZIP_RVA = 0x1797C0;
 static constexpr size_t FONT_GZIP_MAX_SIZE = 0xF1230; // conservative upper bound
-
-struct FontParameters
-{
-	std::wstring engineDir;
-	std::wstring fontsDir;
-	std::wstring fontPath;
-
-	const char* gzipPtr;
-	size_t origGzipSize;
-	uintptr_t baseAddr;
-};
