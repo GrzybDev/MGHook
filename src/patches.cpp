@@ -30,7 +30,7 @@ void PatchStrings(const HMODULE hModule)
 	}
 
 	// Load translations
-	std::wstring dllDir = GetDllDirectory(hModule);
+	const std::wstring dllDir = GetDllDirectory(hModule);
 	LoadCharSubstitutionMap(dllDir + L"charmap.txt");
 	const auto translations = LoadTranslations(dllDir + L"translations.txt");
 
@@ -61,7 +61,7 @@ void PatchStrings(const HMODULE hModule)
 		            "some pointers may not be patched.", GetLastError());
 	}
 
-	auto results = ApplyTranslations(translations, addresses);
+	auto [patchedCount, skippedCount, totalPtrsPatched] = ApplyTranslations(translations, addresses);
 
 	// Restore memory protection
 	VirtualProtect(reinterpret_cast<void*>(addresses.rdataStart),
@@ -70,5 +70,5 @@ void PatchStrings(const HMODULE hModule)
 	               DATA_SIZE, oldProtData, &oldProtData);
 
 	Logger::Log("[Translations] Done. Patched: %d  Skipped: %d  Pointers redirected: %d",
-	            results.patchedCount, results.skippedCount, results.totalPtrsPatched);
+	            patchedCount, skippedCount, totalPtrsPatched);
 }
