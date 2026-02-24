@@ -1,7 +1,7 @@
 #include "pch.hpp"
 #include "helpers.hpp"
 
-std::wstring GetDllDirectory(HMODULE hModule)
+std::wstring GetDllDirectory(const HMODULE hModule)
 {
 	wchar_t buf[MAX_PATH]{};
 	GetModuleFileNameW(hModule, buf, MAX_PATH);
@@ -110,8 +110,7 @@ int PatchPointersInRegion(const uintptr_t scanStart, const size_t scanSize, cons
 	for (uintptr_t addr = scanStart; addr <= scanEnd;
 	     addr += sizeof(uintptr_t))
 	{
-		uintptr_t val = *reinterpret_cast<uintptr_t*>(addr);
-		if (val == oldVA)
+		if (const uintptr_t val = *reinterpret_cast<uintptr_t*>(addr); val == oldVA)
 		{
 			*reinterpret_cast<uintptr_t*>(addr) = newVA;
 			++count;
@@ -124,7 +123,9 @@ int PatchPointersInRegion(const uintptr_t scanStart, const size_t scanSize, cons
 size_t GetSlotSize(const uintptr_t addr, const size_t strLen, const uintptr_t regionEnd)
 {
 	uintptr_t scan = addr + strLen + 1;
+
 	while (scan < regionEnd && *reinterpret_cast<const char*>(scan) == '\0')
 		++scan;
+
 	return scan - addr - 1;
 }
