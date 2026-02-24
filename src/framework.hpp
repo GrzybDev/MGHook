@@ -36,15 +36,9 @@ struct StringRegion
 
 // All string regions to scan
 static constexpr StringRegion STRING_REGIONS[] = {
-	{0x14D240, 0x14D2AF, "Region1-Labels(multi-lang)"}, // file 0x14B840-0x14B8AF
-	{0x14D2B0, 0x14DA97, "Region1-Locations(EN)"}, // file 0x14B8B0-0x14C097
-	{0x14DA98, 0x14E21F, "Region1-Locations(FR)"}, // file 0x14C098-0x14C81F
-	{0x14E220, 0x14E8FF, "Region1-Locations(DE)"}, // file 0x14C820-0x14CEFF
-	{0x14E900, 0x14F10F, "Region1-Locations(IT)"}, // file 0x14CF00-0x14D70F
-	{0x14F110, 0x14F937, "Region1-Locations(ES)"}, // file 0x14D710-0x14DF37
-	{0x14F938, 0x14FF58, "Region1-Locations(JP)"}, // file 0x14DF38-0x14E558
-	{0x1502A0, 0x15537C, "Region2-UI(multi-lang)"}, // file 0x14E8A0-0x15397C
-	{0x155E40, 0x15708F, "Region3-SaveManagement(multi-lang)"}, // file 0x154440-0x15568F
+	{0x14D240, 0x14D2AF, "Region1-SaveLabels"}, // file 0x14B840-0x14B8AF
+	{0x1502A0, 0x15537C, "Region2-UI"}, // file 0x14E8A0-0x15397C
+	{0x155E40, 0x15708F, "Region3-SaveManagement"}, // file 0x154440-0x15568F
 };
 
 static constexpr int NUM_STRING_REGIONS = std::size(STRING_REGIONS);
