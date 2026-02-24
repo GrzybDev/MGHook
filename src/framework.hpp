@@ -14,6 +14,12 @@ static auto VERSION = "0.1.0";
 #include <unordered_map>
 #include <string>
 
+// Gzip Library Headers
+#include <gzip/compress.hpp>
+#include <gzip/decompress.hpp>
+#include <gzip/utils.hpp>
+#include <zlib.h>
+
 // Sections to scan for pointer-table entries
 static constexpr DWORD RDATA_RVA = 0x124000;
 static constexpr DWORD RDATA_SIZE = 0x50400;
@@ -70,4 +76,18 @@ struct TranslationResult
 	int patchedCount;
 	int skippedCount;
 	int totalPtrsPatched;
+};
+
+static constexpr DWORD FONT_GZIP_RVA = 0x1797C0;
+static constexpr size_t FONT_GZIP_MAX_SIZE = 0xF1230; // conservative upper bound
+
+struct FontParameters
+{
+	std::wstring engineDir;
+	std::wstring fontsDir;
+	std::wstring fontPath;
+
+	const char* gzipPtr;
+	size_t origGzipSize;
+	uintptr_t baseAddr;
 };

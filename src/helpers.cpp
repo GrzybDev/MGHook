@@ -129,3 +129,33 @@ size_t GetSlotSize(const uintptr_t addr, const size_t strLen, const uintptr_t re
 
 	return scan - addr - 1;
 }
+
+
+size_t GetGzipStreamSize(const void* data, const size_t maxSize)
+{
+	z_stream strm{};
+	strm.next_in = static_cast<Bytef*>(const_cast<void*>(data));
+	strm.avail_in = static_cast<uInt>((std::min)(maxSize, static_cast<size_t>(UINT_MAX)));
+
+	if (inflateInit2(&strm, 15 + 16) != Z_OK) // 15+16 = gzip auto
+		return 0;
+
+	Bytef discard[32768];
+	int ret;
+	do
+	{
+		strm.next_out = discard;
+		strm.avail_out = sizeof(discard);
+		ret = inflate(&strm, Z_NO_FLUSH);
+		if (ret == Z_STREAM_ERROR || ret == Z_DATA_ERROR || ret == Z_MEM_ERROR)
+		{
+			inflateEnd(&strm);
+			return 0;
+		}
+	}
+	while (ret != Z_STREAM_END);
+
+	const size_t consumed = maxSize - strm.avail_in;
+	inflateEnd(&strm);
+	return consumed;
+}

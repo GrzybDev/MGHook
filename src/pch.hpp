@@ -14,5 +14,6 @@
 #include "logger.hpp"
 #include "charmap.hpp"
 #include "translations.hpp"
+#include "font.hpp"
 
 #endif //PCH_H

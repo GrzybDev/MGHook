@@ -12,6 +12,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\charmap.hpp" />
+    <ClInclude Include="src\font.hpp" />
     <ClInclude Include="src\framework.hpp" />
     <ClInclude Include="src\helpers.hpp" />
     <ClInclude Include="src\logger.hpp" />
@@ -23,6 +24,7 @@
   <ItemGroup>
     <ClCompile Include="src\charmap.cpp" />
     <ClCompile Include="src\dllmain.cpp" />
+    <ClCompile Include="src\font.cpp" />
     <ClCompile Include="src\helpers.cpp" />
     <ClCompile Include="src\logger.cpp" />
     <ClCompile Include="src\patches.cpp" />

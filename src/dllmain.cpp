@@ -39,6 +39,7 @@ BOOL APIENTRY DllMain(const HMODULE hModule,
 
 		LoadRealDll();
 
+		PatchFont(hModule);
 		PatchStrings(hModule);
 	}
 

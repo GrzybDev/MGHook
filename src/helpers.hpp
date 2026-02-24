@@ -12,3 +12,5 @@ uintptr_t FindString(uintptr_t regionStart, uintptr_t regionEnd,
 char* AllocatePersistentString(const char* text, size_t len);
 int PatchPointersInRegion(uintptr_t scanStart, size_t scanSize, uintptr_t oldVA, uintptr_t newVA);
 size_t GetSlotSize(uintptr_t addr, size_t strLen, uintptr_t regionEnd);
+
+size_t GetGzipStreamSize(const void* data, size_t maxSize);
