@@ -70,6 +70,8 @@ MGHook uses two text files for configuration, both placed alongside the hook DLL
 
 A simple key-value file that defines string replacements. Each line maps an original in-game string to its translation, separated by `=`. Lines starting with `;` or `#` are treated as comments. UTF-8 encoding is supported (with optional BOM).
 
+Escape sequences are supported in both keys and values: `\n` (newline), `\r` (carriage return), `\t` (tab), and `\\` (literal backslash).
+
 Example:
 
 ```ini
@@ -79,6 +81,7 @@ NEW GAME=NOWA GRA
 SAVE=ZAPISZ
 LOAD=WCZYTAJ
 OPTIONS=OPCJE
+MULTI\nLINE=WIELO\nLINIOWY
 ```
 
 ### charmap.txt

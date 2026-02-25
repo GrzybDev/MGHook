@@ -2,6 +2,7 @@
 
 std::wstring GetDllDirectory(HMODULE hModule);
 std::string Trim(const std::string& s);
+std::string UnescapeString(const std::string& s);
 
 std::wstring Utf8ToWide(const std::string& utf8);
 std::string WideToUtf8(const std::wstring& wide);

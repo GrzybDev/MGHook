@@ -33,8 +33,8 @@ std::vector<TranslationEntry> LoadTranslations(const std::wstring& path)
 		if (sep == std::string::npos)
 			continue;
 
-		std::string original = Trim(line.substr(0, sep));
-		std::string replacement = Trim(line.substr(sep + 1));
+		std::string original = UnescapeString(Trim(line.substr(0, sep)));
+		std::string replacement = UnescapeString(Trim(line.substr(sep + 1)));
 
 		if (original.empty() || replacement.empty())
 			continue;
