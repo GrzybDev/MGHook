@@ -44,7 +44,7 @@ Features
 Build Requirements
 ------------------
 
-- Visual Studio 2022
+- Visual Studio (2026)
 
 Compiling
 ---------
