@@ -23,31 +23,38 @@ std::string UnescapeString(const std::string& s)
 	std::string result;
 	result.reserve(s.size());
 
-	for (size_t i = 0; i < s.size(); ++i)
+	size_t i = 0;
+	while (i < s.size())
 	{
 		if (s[i] == '\\' && i + 1 < s.size())
 		{
 			switch (s[i + 1])
 			{
-			case 'n': result += '\n';
-				++i;
+			case 'n':
+				result += '\n';
+				i += 2;
 				break;
-			case 'r': result += '\r';
-				++i;
+			case 'r':
+				result += '\r';
+				i += 2;
 				break;
-			case 't': result += '\t';
-				++i;
+			case 't':
+				result += '\t';
+				i += 2;
 				break;
-			case '\\': result += '\\';
-				++i;
+			case '\\':
+				result += '\\';
+				i += 2;
 				break;
-			default: result += s[i];
+			default:
+				result += s[i];
 				break;
 			}
 		}
 		else
 		{
 			result += s[i];
+			++i;
 		}
 	}
 
