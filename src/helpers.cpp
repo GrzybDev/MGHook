@@ -108,6 +108,13 @@ uintptr_t FindString(const uintptr_t regionStart, const uintptr_t regionEnd,
 		if (std::memcmp(reinterpret_cast<const void*>(addr), needle,
 		                needleLen + 1) == 0)
 		{
+			// Ensure this is a real string start, not a suffix of a longer string.
+			// The byte before the match must be '\0' (previous string's terminator)
+			// or we must be at the very start of the region.
+			if (addr != regionStart &&
+				*reinterpret_cast<const char*>(addr - 1) != '\0')
+				continue;
+
 			return addr;
 		}
 	}
