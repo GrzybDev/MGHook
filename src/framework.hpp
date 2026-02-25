@@ -36,6 +36,7 @@ struct StringRegion
 
 // All string regions to scan
 static constexpr StringRegion STRING_REGIONS[] = {
+	{0x14A6E8, 0x14A817, "Region0-Difficulty"}, // file 0x148CE8-0x148E17
 	{0x14D240, 0x14D2AF, "Region1-SaveLabels"}, // file 0x14B840-0x14B8AF
 	{0x1502A0, 0x15537C, "Region2-UI"}, // file 0x14E8A0-0x15397C
 	{0x155E40, 0x15708F, "Region3-SaveManagement"}, // file 0x154440-0x15568F
