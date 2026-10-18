@@ -4,11 +4,23 @@
     <Filter Include="src">
       <UniqueIdentifier>{0cadb856-40ec-48df-99fd-ada9e59c69e5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\app">
+      <UniqueIdentifier>{44cc2b13-fb52-4a05-905b-6a050b33bc53}</UniqueIdentifier>
+    </Filter>
     <Filter Include="src\game">
       <UniqueIdentifier>{d4bb85bf-dc8e-4366-9ade-b3afb9ae4ab1}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\app\hook.hpp">
+      <Filter>src\app</Filter>
+    </ClInclude>
+    <ClInclude Include="src\app\log.hpp">
+      <Filter>src\app</Filter>
+    </ClInclude>
+    <ClInclude Include="src\app\settings.hpp">
+      <Filter>src\app</Filter>
+    </ClInclude>
     <ClInclude Include="src\game\image.hpp">
       <Filter>src\game</Filter>
     </ClInclude>
@@ -20,6 +32,15 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\app\hook.cpp">
+      <Filter>src\app</Filter>
+    </ClCompile>
+    <ClCompile Include="src\app\log.cpp">
+      <Filter>src\app</Filter>
+    </ClCompile>
+    <ClCompile Include="src\app\settings.cpp">
+      <Filter>src\app</Filter>
+    </ClCompile>
     <ClCompile Include="src\game\image.cpp">
       <Filter>src\game</Filter>
     </ClCompile>
