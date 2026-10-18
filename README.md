@@ -1,6 +1,6 @@
 # MGHook
 
-Hook for Metal Gear & Metal Gear 2: Solid Snake (Master Collection) that enables runtime string translation with character substitution support.
+Hook for Metal Gear & Metal Gear 2: Solid Snake (Master Collection) that translates the strings built into the game's executable and replaces the font it draws its UTF-8 text with.
 
 Table of Contents
 -----------------
@@ -31,99 +31,116 @@ Legal notes
 -----------
 
 - The project doesn't contain ***any*** original assets from the game!
-- To use this project you need to have an original copy of the game (bought from [Steam](https://store.steampowered.com/app/2131680/METAL_GEAR__METAL_GEAR_2_Solid_Snake/), the project doesn't make piracy easier and doesn't break any of the DRM included in-game.
+- To use this project you need to have an original copy of the game (bought from [Steam](https://store.steampowered.com/app/2131680/METAL_GEAR__METAL_GEAR_2_Solid_Snake/)), the project doesn't make piracy easier and doesn't break any of the DRM included in-game.
 
 Features
 --------
 
-- Runtime UI/string translation via external translation file
-- Custom character substitution map for languages with non-standard characters
-- DLL proxy hook — no permanent modifications to game files
-- Debug console and file logging support
+- Translation of the strings `METAL GEAR.exe` carries (save and load messages, menu labels, difficulty names), including translations longer than the original
+- Replacement of the font the engine draws UTF-8 text with, of any size, so that letters the game lacks (such as Polish ones) can be added
+- Character maps per string region, for the regions drawn with fonts that only have the game's own characters
+- Changes nothing on disk: everything happens in memory when the game starts
+- Optional log to a console and to a file
 
 Build Requirements
 ------------------
 
-- Visual Studio 2022
+- Visual Studio 2026
+
+### Libraries (installed by vcpkg):
+- zlib
+- GoogleTest (unit tests)
 
 Compiling
 ---------
 
-1. Open `MGHook.slnx` in Visual Studio
-2. Build project in Visual Studio (x64 Debug or Release)
+See one of [build workflows](https://github.com/GrzybDev/MGHook/blob/main/.github/workflows) for more detailed steps
 
-The output DLL will be named `MFReadWrite.dll`.
+1. [Integrate vcpkg with Visual Studio](https://learn.microsoft.com/vcpkg/commands/integrate)
+2. Build the solution `MGHook.slnx` in Visual Studio (x64 Release for the hook)
+3. Run `x64\Release\MGHook.Tests.exe` to run the unit tests; set `MGHOOK_GAME_EXE` to the path of `METAL GEAR.exe` to also check what the hook knows about the game against your copy
+
+The hook is `x64\Release\MFReadWrite.dll`.
 
 Installing
 ----------
 
-1. Copy `MFReadWrite.dll` from either the latest build in [GitHub Releases](https://github.com/GrzybDev/MGHook/releases) or from the build output folder if you compiled it yourself
-2. Place `MFReadWrite.dll` in the game directory (next to the game executable) — the hook will proxy calls to the real system `MFReadWrite.dll` automatically
-3. Place `translations.txt` and (optionally) `charmap.txt` in the same directory as `MFReadWrite.dll`
+1. Copy `MFReadWrite.dll`, either from the latest build in [GitHub Releases](https://github.com/GrzybDev/MGHook/releases) or from `x64\Release` if you compiled it yourself, to the game folder (next to `METAL GEAR.exe`); the game loads it instead of the system's `MFReadWrite.dll`, to which the hook passes the game's calls
+2. Put the files described in [Configuration](#configuration) next to it
+
+To uninstall, delete `MFReadWrite.dll`.
 
 Configuration
 -------------
 
-MGHook uses two text files for configuration, both placed alongside the hook DLL:
+All files are optional and are read from the folder of `MFReadWrite.dll`. Text files are UTF-8, with or without a byte order mark.
+
+### MGHook.ini
+
+| Key           | Description                                                                                                   | Default |
+|:-------------:|:--------------------------------------------------------------------------------------------------------------|:-------:|
+| `Log.Console` | Show the hook's log in a console window                                                                       | 0       |
+| `Log.File`    | Save the hook's log to `MGHook.log`                                                                           | 0       |
+| `Font.Export` | When there is no replacement font, save the game's own font to `EngineSupport\Fonts\MGS_Font_nht.raw` to edit | 0       |
+
+```ini
+[Log]
+File=1
+```
 
 ### translations.txt
 
-A simple key-value file that defines string replacements. Each line maps an original in-game string to its translation, separated by `=`. Lines starting with `;` or `#` are treated as comments. UTF-8 encoding is supported (with optional BOM).
+Each line maps a string of the game, byte for byte, to its translation: `original=translation`. Every string of the [regions](#string-regions) that reads exactly like the original is translated. Lines starting with `#` or `;` are comments, and a later line with the same original replaces an earlier one.
 
-Example:
+Nothing is trimmed, since many strings of the game start or end with spaces: everything before the first `=` not written as `\=` is the original and everything after it the translation. Lines with an empty original or translation are skipped and logged. The escapes `\n` (new line), `\r`, `\t`, `\\`, `\=` (an `=` in the original) and `\xHH` (any byte) work on both sides.
 
 ```ini
-# UI translations
-CONTINUE=KONTYNUUJ
-NEW GAME=NOWA GRA
-SAVE=ZAPISZ
-LOAD=WCZYTAJ
-OPTIONS=OPCJE
+# Save and load messages
+No data present on storage device.=Brak danych na nośniku.
+Save Successful=Zapisano
+DATA LOAD=WCZYTAJ
+APPROVED BY =ZATWIERDZIŁ 
 ```
 
-### charmap.txt
+A translation that fits in the original's place is written there; a longer one is kept elsewhere and every pointer to the original is turned to it (when nothing points at the original, it stays as it is and the log says so). The log lists each translated string and each original it did not find.
 
-An optional character substitution map for remapping individual characters. This is useful for languages whose characters are not present in the game's built-in font (UTF-8 encoding). Each line maps one UTF-8 source character to one UTF-8 replacement character, separated by `=`. Lines starting with `;` or `#` are treated as comments.
+### String regions
 
-Example:
+The hook knows four regions of `METAL GEAR.exe` 2.0.2.0 (the current Steam build); with any other build it leaves the strings alone and says so in the log.
+
+| Region        | Holds                                                         | Encoding                                                                      |
+|:--------------|:--------------------------------------------------------------|:------------------------------------------------------------------------------|
+| `difficulty`  | Difficulty names (`VERY EASY` … `EXTREMO EUROPEO`)            | MGS3's 8-bit text: lowercase letters and some symbols stand for accented capitals |
+| `save_labels` | Save labels (`CLEAR DATA`, `ORIGINAL`, …)                     | MGS3's 8-bit text                                                             |
+| `menus`       | Menu labels and screen titles (`DATA LOAD`, `OK`, `CANCEL`, …) | MGS3's 8-bit text                                                             |
+| `messages`    | Save, load and storage messages in six languages              | UTF-8, drawn with the font below                                              |
+
+### charmap.txt and charmap_\<region\>.txt
+
+Character maps replace characters a font lacks with codes it has, after the translation is read: `character=replacement`, where the character is a single UTF-8 character and the replacement one or more bytes (escapes as in `translations.txt`). `charmap.txt` applies to every region and `charmap_<region>.txt` (such as `charmap_menus.txt`) to one region, overriding `charmap.txt` for the characters it maps. Each character is replaced once, so a replacement is never mapped again.
 
 ```ini
-# Polish character substitutions
-ą=a
-ć=c
-ę=e
-ł=l
-ń=n
-ó=o
-ś=s
-ź=z
+# charmap_menus.txt: draw Polish letters with codes whose glyphs were redrawn in the menu font
+Ą=\x5B
+Ł=\x5D
 ż=z
 ```
 
-### Debug logging
+### Font
 
-To enable debug logging, create one or both of the following empty files next to the game executable:
-
-| File          | Description                                     |
-|:-------------:|:-----------------------------------------------:|
-| `.debug`      | Opens a console window showing hook log output  |
-| `.debug_log`  | Saves hook log to `mghook.log` next to the DLL  |
+`EngineSupport\Fonts\MGS_Font_nht.raw` replaces the TNOF font built into `METAL GEAR.exe`, which the engine draws UTF-8 text with (the `messages` region, among others). It may be larger than the original. Set `Font.Export=1` and start the game once to get the original, then edit it with [MGTools](https://github.com/GrzybDev/MGTools) (`mgtools tnof export` and `mgtools tnof import`).
 
 Usage
 -----
 
 1. Install the hook as described in [Installing](#installing)
-2. Create a `translations.txt` file with your translations (see [Configuration](#configuration))
-3. Optionally create a `charmap.txt` file if your language requires character remapping
-4. Launch the game — MGHook will automatically load translations and patch strings in memory at startup
+2. Add the translations, character maps and font you need (see [Configuration](#configuration))
+3. Start the game from Steam as usual
 
-On startup the hook will:
-1. Load the real system `MFReadWrite.dll` and proxy all Media Foundation calls
-2. Load `charmap.txt` (if present) for character substitution
-3. Load `translations.txt` and scan game memory for matching strings
-4. Patch matched strings in-place and redirect pointer tables to translated versions
-
-If a translation is longer than the original string's memory slot, it will be stored in a separately allocated buffer and all pointer references will be redirected.
+When the game starts, before any of its code runs, the hook:
+1. Points the game's call that unpacks its built-in font at the replacement and tells the game how large it is
+2. Writes each translation over its original, or elsewhere with every pointer to the original turned to it
+3. Leaves everything else to the game; its Media Foundation calls go on to the system's `MFReadWrite.dll`
 
 Credits
 -------
