@@ -5,9 +5,19 @@
 
 #include "font/font_replacement.hpp"
 #include "game/image.hpp"
+#include "text/regions.hpp"
+#include "text/translation.hpp"
 
 namespace mghook::test
 {
+	namespace
+	{
+		const StringRegion& region(const std::string_view name)
+		{
+			return *std::ranges::find(kStringRegions, name, &StringRegion::name);
+		}
+	}
+
 	// Checks what the hook knows about METAL GEAR.exe against the real file, named by MGHOOK_GAME_EXE.
 	class GameTest : public testing::Test
 	{
@@ -39,6 +49,40 @@ namespace mghook::test
 		inline static std::wstring path_;
 		inline static HMODULE module_ = nullptr;
 	};
+
+	TEST_F(GameTest, IsTheBuildTheRegionsWereTakenFrom)
+	{
+		EXPECT_EQ(ModuleImage(module_).timestamp(), kSupportedBuild);
+	}
+
+	TEST_F(GameTest, RegionsHoldWholeStringsTheGameReachesThroughPointers)
+	{
+		const ModuleImage image(module_);
+		const std::pair<std::string_view, std::string_view> samples[] = {
+			{"difficulty", "VERY EASY"}, {"difficulty", "EXTREMO EUROPEO"}, {"save_labels", "CLEAR DATA"},
+			{"save_labels", "PARTIDA SUPERADA"}, {"menus", "DATA LOAD"}, {"menus", "PUNTO PARA CARGAR"},
+			{"messages", "No data present on storage device."},
+		};
+
+		std::vector<std::uintptr_t> targets;
+		for (std::uintptr_t* slot : image.relocatedPointers())
+			targets.push_back(*slot);
+
+		for (const auto& [name, text] : samples)
+		{
+			const StringRegion& known = region(name);
+			const std::span<std::byte> bytes = image.at(known.rva, known.size);
+			EXPECT_EQ(image.at(known.rva - 1, 1)[0], std::byte{0}) << name;
+			EXPECT_EQ(bytes.back(), std::byte{0}) << name;
+
+			const MappedRegion mappedRegion{.name = name, .bytes = bytes, .charMap = {}};
+			const TextEntry entry{.key = std::string(text), .value = "X", .line = 1};
+			const TextPlan plan = planTranslation(std::span(&mappedRegion, 1), std::span(&entry, 1));
+			ASSERT_EQ(plan.patches.size(), 1u) << text;
+			EXPECT_NE(std::ranges::find(targets, reinterpret_cast<std::uintptr_t>(plan.patches[0].room.data())),
+			          targets.end()) << text;
+		}
+	}
 
 	TEST_F(GameTest, CarriesItsFontAsAGzippedTnofFont)
 	{

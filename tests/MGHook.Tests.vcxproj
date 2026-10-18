@@ -42,10 +42,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="char_map_tests.cpp" />
     <ClCompile Include="font_tests.cpp" />
     <ClCompile Include="game_tests.cpp" />
     <ClCompile Include="image_tests.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="text_file_tests.cpp" />
+    <ClCompile Include="translation_tests.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MGHook.Core.vcxproj">

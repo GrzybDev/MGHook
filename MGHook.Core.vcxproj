@@ -50,6 +50,10 @@
     <ClInclude Include="src\font\gzip.hpp" />
     <ClInclude Include="src\game\image.hpp" />
     <ClInclude Include="src\pch.hpp" />
+    <ClInclude Include="src\text\char_map.hpp" />
+    <ClInclude Include="src\text\regions.hpp" />
+    <ClInclude Include="src\text\text_file.hpp" />
+    <ClInclude Include="src\text\translation.hpp" />
     <ClInclude Include="src\util\files.hpp" />
     <ClInclude Include="src\version.hpp" />
   </ItemGroup>
@@ -63,6 +67,9 @@
     <ClCompile Include="src\pch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="src\text\char_map.cpp" />
+    <ClCompile Include="src\text\text_file.cpp" />
+    <ClCompile Include="src\text\translation.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
 </Project>

@@ -5,6 +5,8 @@
 #include "app/settings.hpp"
 #include "font/font_replacement.hpp"
 #include "game/image.hpp"
+#include "text/regions.hpp"
+#include "text/translation.hpp"
 #include "version.hpp"
 
 namespace mghook
@@ -20,6 +22,66 @@ namespace mghook
 
 			path.resize(length);
 			return std::filesystem::path(path).parent_path();
+		}
+
+		void logProblems(const std::filesystem::path& file, const std::vector<std::string>& problems)
+		{
+			for (const std::string& problem : problems)
+				log::warning("{}, {}", log::pathText(file.filename()), problem);
+		}
+
+		CharMap loadCharMap(const std::filesystem::path& file)
+		{
+			std::optional<TextFile> text = readTextFile(file);
+			if (!text)
+				return {};
+
+			CharMap map = CharMap::fromEntries(text->entries, text->problems);
+			logProblems(file, text->problems);
+			log::info("Loaded {} character(s) from {}", text->entries.size(), log::pathText(file.filename()));
+			return map;
+		}
+
+		void translateStrings(const ModuleImage& image, const std::filesystem::path& folder)
+		{
+			const std::filesystem::path file = folder / L"translations.txt";
+			const std::optional<TextFile> translations = readTextFile(file);
+			if (!translations)
+			{
+				log::info("No {}, so the strings stay as they are", log::pathText(file));
+				return;
+			}
+
+			logProblems(file, translations->problems);
+			if (image.timestamp() != kSupportedBuild)
+			{
+				log::error("This METAL GEAR.exe (built {:#x}) is not the one the string regions are known for ({:#x}), "
+				           "so the strings stay as they are", image.timestamp(), kSupportedBuild);
+				return;
+			}
+
+			const CharMap common = loadCharMap(folder / L"charmap.txt");
+			std::vector<MappedRegion> regions;
+			for (const StringRegion& region : kStringRegions)
+			{
+				const CharMap own = loadCharMap(folder / std::format("charmap_{}.txt", region.name));
+				regions.push_back({.name = region.name, .bytes = image.at(region.rva, region.size), .charMap = own.over(common)});
+			}
+
+			const TextPlan plan = planTranslation(regions, translations->entries);
+			for (const TextEntry& entry : plan.unmatched)
+				log::warning("{}, line {}: no string in the regions reads \"{}\"", log::pathText(file.filename()),
+				             entry.line, entry.key);
+			for (const TextPatch& patch : plan.patches)
+				log::info("{}: \"{}\" becomes \"{}\"{}", patch.region, patch.original, patch.translation,
+				          patch.fitsInPlace() ? "" : ", which is longer than the original");
+
+			const TextResult result = applyTranslation(plan.patches, image.relocatedPointers());
+			for (const std::string& original : result.stranded)
+				log::warning("\"{}\" stays as it is: its translation is longer and nothing points at it", original);
+
+			log::info("Translated {} string(s) in place and moved {}, turning {} pointer(s)", result.inPlace,
+			          result.moved, result.redirectedPointers);
 		}
 
 		template <typename Part>
@@ -54,6 +116,7 @@ namespace mghook
 			{
 				replaceFont(image, folder / L"EngineSupport" / L"Fonts" / L"MGS_Font_nht.raw", settings.exportFont);
 			});
+			runPart("Translating the strings", [&] { translateStrings(image, folder); });
 		});
 	}
 }
