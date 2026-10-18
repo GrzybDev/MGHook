@@ -3,4 +3,6 @@
     <Platform Name="x64" />
   </Configurations>
   <Project Path="MGHook.vcxproj" Id="e26d1e09-b224-4cff-b49f-719086e5c201" />
+  <Project Path="MGHook.Core.vcxproj" Id="0a3fc3d0-2b07-45c0-96b7-0b1ae42098bd" />
+  <Project Path="tests/MGHook.Tests.vcxproj" Id="8666c6ce-fad6-479f-8820-0ae823924474" />
 </Solution>

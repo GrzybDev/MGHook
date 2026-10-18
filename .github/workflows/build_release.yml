@@ -54,6 +54,9 @@ jobs:
       - name: Build
         run: msbuild ${{ github.event.repository.name }}.slnx -property:Configuration=Release
 
+      - name: Test
+        run: ./x64/Release/MGHook.Tests.exe
+
       - name: Sign the library
         uses: GrzybDev/actions/codesign@v1
         env:

@@ -1,18 +1,28 @@
-// pch.h: This is a precompiled header file.
-// Files listed below are compiled only once, improving build performance for future builds.
-// This also affects IntelliSense performance, including code completion and many code browsing features.
-// However, files listed here are ALL re-compiled if any one of them is updated between builds.
-// Do not add files here that you will be updating frequently as this negates the performance advantage.
+#pragma once
 
-#ifndef PCH_H
-#define PCH_H
+#define WIN32_LEAN_AND_MEAN
+#define NOMINMAX
 
-// add headers that you want to pre-compile here
-#include "framework.hpp"
-#include "MFReadWrite.hpp"
-#include "helpers.hpp"
-#include "logger.hpp"
-#include "charmap.hpp"
-#include "translations.hpp"
+#include <algorithm>
+#include <array>
+#include <cctype>
+#include <cstddef>
+#include <cstdint>
+#include <cstring>
+#include <filesystem>
+#include <format>
+#include <fstream>
+#include <iterator>
+#include <mutex>
+#include <optional>
+#include <span>
+#include <stdexcept>
+#include <string>
+#include <string_view>
+#include <system_error>
+#include <unordered_map>
+#include <unordered_set>
+#include <utility>
+#include <vector>
 
-#endif //PCH_H
+#include <windows.h>

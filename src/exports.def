@@ -1,0 +1,9 @@
+LIBRARY "MFReadWrite"
+EXPORTS
+	DllCanUnloadNow PRIVATE
+	DllGetClassObject PRIVATE
+	MFCreateSinkWriterFromMediaSink
+	MFCreateSinkWriterFromURL
+	MFCreateSourceReaderFromByteStream
+	MFCreateSourceReaderFromMediaSource
+	MFCreateSourceReaderFromURL
