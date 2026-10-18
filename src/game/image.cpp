@@ -63,8 +63,10 @@ namespace mghook
 			if (block->SizeOfBlock < sizeof(IMAGE_BASE_RELOCATION) || block->SizeOfBlock > table.size() - offset)
 				break;
 
-			const std::span entries(reinterpret_cast<const std::uint16_t*>(block + 1),
-			                        (block->SizeOfBlock - sizeof(IMAGE_BASE_RELOCATION)) / sizeof(std::uint16_t));
+			const std::span<std::byte> entryBytes =
+				table.subspan(offset + sizeof(IMAGE_BASE_RELOCATION), block->SizeOfBlock - sizeof(IMAGE_BASE_RELOCATION));
+			const std::span entries(reinterpret_cast<const std::uint16_t*>(entryBytes.data()),
+			                        entryBytes.size() / sizeof(std::uint16_t));
 			for (const std::uint16_t entry : entries)
 			{
 				if (entry >> 12 == IMAGE_REL_BASED_DIR64)
