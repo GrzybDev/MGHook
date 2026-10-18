@@ -7,8 +7,14 @@
     <Filter Include="src\app">
       <UniqueIdentifier>{44cc2b13-fb52-4a05-905b-6a050b33bc53}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\font">
+      <UniqueIdentifier>{fdeb0d38-2435-4b66-8605-670de0e7399a}</UniqueIdentifier>
+    </Filter>
     <Filter Include="src\game">
       <UniqueIdentifier>{d4bb85bf-dc8e-4366-9ade-b3afb9ae4ab1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\util">
+      <UniqueIdentifier>{6263ea90-ff15-40d9-90ca-0c7c69c69c75}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -21,11 +27,20 @@
     <ClInclude Include="src\app\settings.hpp">
       <Filter>src\app</Filter>
     </ClInclude>
+    <ClInclude Include="src\font\font_replacement.hpp">
+      <Filter>src\font</Filter>
+    </ClInclude>
+    <ClInclude Include="src\font\gzip.hpp">
+      <Filter>src\font</Filter>
+    </ClInclude>
     <ClInclude Include="src\game\image.hpp">
       <Filter>src\game</Filter>
     </ClInclude>
     <ClInclude Include="src\pch.hpp">
       <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\util\files.hpp">
+      <Filter>src\util</Filter>
     </ClInclude>
     <ClInclude Include="src\version.hpp">
       <Filter>src</Filter>
@@ -40,6 +55,12 @@
     </ClCompile>
     <ClCompile Include="src\app\settings.cpp">
       <Filter>src\app</Filter>
+    </ClCompile>
+    <ClCompile Include="src\font\font_replacement.cpp">
+      <Filter>src\font</Filter>
+    </ClCompile>
+    <ClCompile Include="src\font\gzip.cpp">
+      <Filter>src\font</Filter>
     </ClCompile>
     <ClCompile Include="src\game\image.cpp">
       <Filter>src\game</Filter>

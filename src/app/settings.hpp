@@ -9,6 +9,7 @@ namespace mghook
 	{
 		bool logToConsole = false;
 		bool logToFile = false;
+		bool exportFont = false;
 
 		/// Reads the switches, keeping the default of each one the file does not set.
 		/// @param file The configuration file, which may be missing.

@@ -16,6 +16,7 @@ namespace mghook
 		return {
 			.logToConsole = readSwitch(file, L"Log", L"Console"),
 			.logToFile = readSwitch(file, L"Log", L"File"),
+			.exportFont = readSwitch(file, L"Font", L"Export"),
 		};
 	}
 }

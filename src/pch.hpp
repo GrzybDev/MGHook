@@ -26,3 +26,5 @@
 #include <vector>
 
 #include <windows.h>
+
+#include <zlib.h>

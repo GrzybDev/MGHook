@@ -46,14 +46,19 @@
     <ClInclude Include="src\app\hook.hpp" />
     <ClInclude Include="src\app\log.hpp" />
     <ClInclude Include="src\app\settings.hpp" />
+    <ClInclude Include="src\font\font_replacement.hpp" />
+    <ClInclude Include="src\font\gzip.hpp" />
     <ClInclude Include="src\game\image.hpp" />
     <ClInclude Include="src\pch.hpp" />
+    <ClInclude Include="src\util\files.hpp" />
     <ClInclude Include="src\version.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\app\hook.cpp" />
     <ClCompile Include="src\app\log.cpp" />
     <ClCompile Include="src\app\settings.cpp" />
+    <ClCompile Include="src\font\font_replacement.cpp" />
+    <ClCompile Include="src\font\gzip.cpp" />
     <ClCompile Include="src\game\image.cpp" />
     <ClCompile Include="src\pch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>

@@ -42,6 +42,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="font_tests.cpp" />
+    <ClCompile Include="game_tests.cpp" />
     <ClCompile Include="image_tests.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>

@@ -3,6 +3,8 @@
 
 #include "app/log.hpp"
 #include "app/settings.hpp"
+#include "font/font_replacement.hpp"
+#include "game/image.hpp"
 #include "version.hpp"
 
 namespace mghook
@@ -46,6 +48,12 @@ namespace mghook
 			const Settings settings = Settings::load(folder / L"MGHook.ini");
 			log::open({.console = settings.logToConsole, .file = settings.logToFile ? folder / L"MGHook.log" : std::filesystem::path()});
 			log::info("MGHook {} by Marek Grzyb (@GrzybDev), https://github.com/GrzybDev/MGHook", kVersion);
+
+			const ModuleImage image(GetModuleHandleW(nullptr));
+			runPart("Replacing the font", [&]
+			{
+				replaceFont(image, folder / L"EngineSupport" / L"Fonts" / L"MGS_Font_nht.raw", settings.exportFont);
+			});
 		});
 	}
 }
