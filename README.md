@@ -22,6 +22,8 @@ Game Info
 |-------------:|:------------------------------------------------------------------------|
 | Developer(s) | Konami                                                                  |
 | Publisher(s) | Konami                                                                  |
+|  Director(s) | Hideo Kojima (original games)                                           |
+|  Producer(s) | Noriaki Okamura (Master Collection)                                     |
 |       Engine | Proprietary                                                             |
 |  Platform(s) | Windows, PlayStation 4, PlayStation 5, Xbox Series X/S, Nintendo Switch |
 |     Genre(s) | Action-adventure, stealth                                               |
@@ -30,8 +32,9 @@ Game Info
 Legal notes
 -----------
 
-- The project doesn't contain ***any*** original assets from the game!
+- The project contains no original assets from the game.
 - To use this project you need to have an original copy of the game (bought from [Steam](https://store.steampowered.com/app/2131680/METAL_GEAR__METAL_GEAR_2_Solid_Snake/)), the project doesn't make piracy easier and doesn't break any of the DRM included in-game.
+- The project is not affiliated with or endorsed by Konami.
 
 Features
 --------
@@ -39,7 +42,7 @@ Features
 - Translation of the strings `METAL GEAR.exe` carries (save and load messages, menu labels, difficulty names), including translations longer than the original
 - Replacement of the font the engine draws UTF-8 text with, of any size, so that letters the game lacks (such as Polish ones) can be added
 - Character maps per string region, for the regions drawn with fonts that only have the game's own characters
-- Changes nothing on disk: everything happens in memory when the game starts
+- Leaves the game's files unchanged: the executable is patched in memory when the game starts
 - Optional log to a console and to a file
 
 Build Requirements
@@ -54,7 +57,7 @@ Build Requirements
 Compiling
 ---------
 
-See one of [build workflows](https://github.com/GrzybDev/MGHook/blob/main/.github/workflows) for more detailed steps
+See the [shared build workflows](https://github.com/GrzybDev/actions/tree/v1/.github/workflows) `cpp-checks.yml` and `cpp-dll.yml`, which CI and the release build run, for more detailed steps
 
 1. [Integrate vcpkg with Visual Studio](https://learn.microsoft.com/vcpkg/commands/integrate)
 2. Build the solution `MGHook.slnx` in Visual Studio (x64 Release for the hook)
@@ -77,11 +80,11 @@ All files are optional and are read from the folder of `MFReadWrite.dll`. Text f
 
 ### MGHook.ini
 
-| Key           | Description                                                                                                   | Default |
-|:-------------:|:--------------------------------------------------------------------------------------------------------------|:-------:|
-| `Log.Console` | Show the hook's log in a console window                                                                       | 0       |
-| `Log.File`    | Save the hook's log to `MGHook.log`                                                                           | 0       |
-| `Font.Export` | When there is no replacement font, save the game's own font to `EngineSupport\Fonts\MGS_Font_nht.raw` to edit | 0       |
+| Key           | Description                                                                                                   | Allowed values | Default |
+|:-------------:|:--------------------------------------------------------------------------------------------------------------|:--------------:|:-------:|
+| `Log.Console` | Show the hook's log in a console window                                                                       | 0 or 1         | 0       |
+| `Log.File`    | Save the hook's log to `MGHook.log`                                                                           | 0 or 1         | 0       |
+| `Font.Export` | When there is no replacement font, save the game's own font to `EngineSupport\Fonts\MGS_Font_nht.raw` to edit | 0 or 1         | 0       |
 
 ```ini
 [Log]
@@ -106,13 +109,13 @@ A translation that fits in the original's place is written there; a longer one i
 
 ### String regions
 
-The hook knows four regions of `METAL GEAR.exe` 2.0.2.0 (the current Steam build); with any other build it leaves the strings alone and says so in the log.
+The hook knows four regions of `METAL GEAR.exe` 2.0.2.0; with any other build it leaves the strings alone and says so in the log.
 
 | Region        | Holds                                                         | Encoding                                                                      |
 |:--------------|:--------------------------------------------------------------|:------------------------------------------------------------------------------|
-| `difficulty`  | Difficulty names (`VERY EASY` … `EXTREMO EUROPEO`)            | MGS3's 8-bit text: lowercase letters and some symbols stand for accented capitals |
-| `save_labels` | Save labels (`CLEAR DATA`, `ORIGINAL`, …)                     | MGS3's 8-bit text                                                             |
-| `menus`       | Menu labels and screen titles (`DATA LOAD`, `OK`, `CANCEL`, …) | MGS3's 8-bit text                                                             |
+| `difficulty`  | Difficulty names (`VERY EASY` … `EXTREMO EUROPEO`)            | 8-bit text: lowercase letters and some symbols stand for accented capitals    |
+| `save_labels` | Save labels (`CLEAR DATA`, `ORIGINAL`, …)                     | The same 8-bit text                                                           |
+| `menus`       | Menu labels and screen titles (`DATA LOAD`, `OK`, `CANCEL`, …) | The same 8-bit text                                                           |
 | `messages`    | Save, load and storage messages in six languages              | UTF-8, drawn with the font below                                              |
 
 ### charmap.txt and charmap_\<region\>.txt
