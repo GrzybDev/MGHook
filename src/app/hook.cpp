@@ -38,7 +38,7 @@ namespace mghook
 
 			CharMap map = CharMap::fromEntries(text->entries, text->problems);
 			logProblems(file, text->problems);
-			log::info("Loaded {} character(s) from {}", text->entries.size(), log::pathText(file.filename()));
+			log::info("Loaded {} character(s) from {}", map.size(), log::pathText(file.filename()));
 			return map;
 		}
 

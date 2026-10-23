@@ -38,6 +38,7 @@ namespace mghook::test
 		const CharMap map = charMap("ab=x\n\\xFF=y\nñ=n", &problems);
 
 		EXPECT_EQ(problems.size(), 2u);
+		EXPECT_EQ(map.size(), 1u);
 		EXPECT_EQ(map.apply("abñ\xFF"), "abn\xFF");
 	}
 }

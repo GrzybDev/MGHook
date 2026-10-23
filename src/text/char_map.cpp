@@ -62,4 +62,9 @@ namespace mghook
 
 		return result;
 	}
+
+	std::size_t CharMap::size() const noexcept
+	{
+		return replacements_.size();
+	}
 }

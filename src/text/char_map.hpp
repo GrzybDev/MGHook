@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstddef>
 #include <span>
 #include <string>
 #include <string_view>
@@ -26,6 +27,9 @@ namespace mghook
 		/// Replaces every mapped character of a text in one pass, so a replacement is never mapped again.
 		/// @param text UTF-8 text, which may hold bytes that are no character.
 		[[nodiscard]] std::string apply(std::string_view text) const;
+
+		/// Counts the characters the map replaces.
+		[[nodiscard]] std::size_t size() const noexcept;
 
 	private:
 		std::unordered_map<std::string, std::string> replacements_;
