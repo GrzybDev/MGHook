@@ -1,12 +1,15 @@
-#include <cstring>
+#include <filesystem>
+#include <format>
 
 #include <gtest/gtest.h>
 #include <windows.h>
 
 #include "font/font_replacement.hpp"
+#include "font/gzip.hpp"
 #include "game/image.hpp"
 #include "text/regions.hpp"
 #include "text/translation.hpp"
+#include "util/files.hpp"
 
 namespace mghook::test
 {
@@ -91,9 +94,31 @@ namespace mghook::test
 
 		ASSERT_TRUE(font);
 		EXPECT_TRUE(font->content.starts_with("TNOF"));
-		std::uint32_t sizeField;
-		std::memcpy(&sizeField, font->member.last(sizeof(sizeField)).data(), sizeof(sizeField));
-		EXPECT_EQ(sizeField, font->content.size());
+		EXPECT_EQ(gzipSizeField(font->member), font->content.size());
+	}
+
+	TEST_F(GameTest, ExportsItsFontOnlyWhereThereIsNoFile)
+	{
+		const ModuleImage image(module_);
+		const std::optional<BuiltInFont> builtIn = findBuiltInFont(image.section(".data"));
+		ASSERT_TRUE(builtIn);
+		const std::filesystem::path folder =
+			std::filesystem::temp_directory_path() / std::format("MGHook.Tests.{}", GetCurrentProcessId());
+		const std::filesystem::path file = folder / "MGS_Font_nht.raw";
+		std::filesystem::remove_all(folder);
+
+		replaceFont(image, file, true);
+		const std::optional<std::string> exported = readFile(file);
+		// Compared as a whole, since a failed comparison of two 3 MB fonts would print them both.
+		EXPECT_TRUE(exported && *exported == builtIn->content);
+
+		// No TNOF font, so that the hook leaves the shared game image unpatched.
+		writeFile(file, "an edited font");
+		replaceFont(image, file, true);
+		EXPECT_EQ(readFile(file), "an edited font");
+		EXPECT_EQ(gzipSizeField(builtIn->member), builtIn->content.size());
+
+		std::filesystem::remove_all(folder);
 	}
 
 	TEST_F(GameTest, ImportsUncompressGzipFromEngine)

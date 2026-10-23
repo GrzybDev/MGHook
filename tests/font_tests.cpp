@@ -1,10 +1,10 @@
-#include <cstring>
 #include <string>
 
 #include <gtest/gtest.h>
 #include <zlib.h>
 
 #include "font/font_replacement.hpp"
+#include "font/gzip.hpp"
 
 namespace mghook::test
 {
@@ -36,13 +36,6 @@ namespace mghook::test
 			member.resize(stream.total_out);
 			deflateEnd(&stream);
 			return member;
-		}
-
-		std::uint32_t sizeField(const std::span<const std::byte> member)
-		{
-			std::uint32_t size;
-			std::memcpy(&size, member.last(sizeof(size)).data(), sizeof(size));
-			return size;
 		}
 	}
 
@@ -108,9 +101,9 @@ namespace mghook::test
 		const BuiltInFont font = *findBuiltInFont(section());
 		const FontSubstitute substitute(font.member, replacement_, &engineUncompress);
 		substitute.announceSize();
-		ASSERT_EQ(sizeField(font.member), replacement_.size());
+		ASSERT_EQ(gzipSizeField(font.member), replacement_.size());
 
-		std::string buffer(sizeField(font.member), '\0');
+		std::string buffer(gzipSizeField(font.member), '\0');
 
 		EXPECT_EQ(uncompress(substitute, font, buffer), Z_OK);
 		EXPECT_EQ(buffer, replacement_);
@@ -137,7 +130,7 @@ namespace mghook::test
 		std::string buffer(builtIn_.size(), '\0');
 
 		EXPECT_EQ(uncompress(substitute, font, buffer), kEngineResult);
-		EXPECT_EQ(sizeField(font.member), builtIn_.size());
+		EXPECT_EQ(gzipSizeField(font.member), builtIn_.size());
 		EXPECT_EQ(gEngineCalls, 1);
 	}
 }

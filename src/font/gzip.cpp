@@ -33,4 +33,11 @@ namespace mghook
 
 		return {.size = size, .content = std::move(content)};
 	}
+
+	std::uint32_t gzipSizeField(const std::span<const std::byte> member)
+	{
+		std::uint32_t size;
+		std::memcpy(&size, member.last(sizeof(size)).data(), sizeof(size));
+		return size;
+	}
 }

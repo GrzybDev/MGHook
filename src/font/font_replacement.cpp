@@ -43,9 +43,8 @@ namespace mghook
 	}
 
 	FontSubstitute::FontSubstitute(const std::span<std::byte> member, std::string font, const UncompressGzip original)
-		: member_(member), font_(std::move(font)), original_(original)
+		: member_(member), builtInSize_(gzipSizeField(member)), font_(std::move(font)), original_(original)
 	{
-		std::memcpy(&builtInSize_, member_.last(sizeof(builtInSize_)).data(), sizeof(builtInSize_));
 	}
 
 	void FontSubstitute::announceSize() const
@@ -88,6 +87,14 @@ namespace mghook
 
 	void replaceFont(const ModuleImage& image, const std::filesystem::path& file, const bool exportWhenMissing)
 	{
+		const bool replacing = std::filesystem::exists(file);
+		if (!replacing && !exportWhenMissing)
+		{
+			log::info("No font at {}, so the game keeps its own", log::pathText(file));
+			return;
+		}
+
+		// Unpacking the built-in font takes megabytes and holds up the game's start, so it waits until it is needed.
 		std::optional<BuiltInFont> builtIn = findBuiltInFont(image.section(".data"));
 		if (!builtIn)
 		{
@@ -95,16 +102,10 @@ namespace mghook
 			return;
 		}
 
-		if (!std::filesystem::exists(file))
+		if (!replacing)
 		{
-			if (exportWhenMissing)
-			{
-				writeFile(file, builtIn->content);
-				log::info("Exported the built-in font to {}", log::pathText(file));
-			}
-			else
-				log::info("No font at {}, so the game keeps its own", log::pathText(file));
-
+			writeFile(file, builtIn->content);
+			log::info("Exported the built-in font to {}", log::pathText(file));
 			return;
 		}
 

@@ -36,6 +36,8 @@ namespace mghook
 	class FontSubstitute
 	{
 	public:
+		/// Prepares the replacement for one built-in member, remembering the member's size field so that the fallback
+		/// can restore it.
 		/// @param member The built-in font's gzip member.
 		/// @param font The replacement font.
 		/// @param original The engine's function, which unpacks everything else.
