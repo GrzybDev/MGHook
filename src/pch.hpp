@@ -13,6 +13,7 @@
 #include <format>
 #include <fstream>
 #include <iterator>
+#include <memory>
 #include <mutex>
 #include <optional>
 #include <span>

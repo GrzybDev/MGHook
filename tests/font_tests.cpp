@@ -28,7 +28,7 @@ namespace mghook::test
 			deflateSetHeader(&stream, &header);
 
 			std::string member(deflateBound(&stream, static_cast<uLong>(content.size())) + 64, '\0');
-			stream.next_in = reinterpret_cast<Bytef*>(const_cast<char*>(content.data()));
+			stream.next_in = reinterpret_cast<const Bytef*>(content.data());
 			stream.avail_in = static_cast<uInt>(content.size());
 			stream.next_out = reinterpret_cast<Bytef*>(member.data());
 			stream.avail_out = static_cast<uInt>(member.size());

@@ -6,12 +6,13 @@ namespace mghook
 	GzipMember inflateGzipMember(const std::span<const std::byte> data)
 	{
 		z_stream stream{};
-		stream.next_in = const_cast<Bytef*>(reinterpret_cast<const Bytef*>(data.data()));
+		stream.next_in = reinterpret_cast<const Bytef*>(data.data());
 		stream.avail_in = static_cast<uInt>(std::min<std::size_t>(data.size(), UINT_MAX));
 
 		// 16 + the largest window accepts a gzip header and nothing else.
 		if (inflateInit2(&stream, 16 + MAX_WBITS) != Z_OK)
 			throw std::runtime_error("zlib could not start inflating");
+		const std::unique_ptr<z_stream, decltype(&inflateEnd)> inflation(&stream, &inflateEnd);
 
 		std::string content;
 		int result;
@@ -25,13 +26,10 @@ namespace mghook
 		}
 		while (result == Z_OK);
 
-		const std::size_t size = stream.total_in;
-		inflateEnd(&stream);
-
 		if (result != Z_STREAM_END)
 			throw std::runtime_error(std::format("The gzip member is damaged or cut short (zlib error {})", result));
 
-		return {.size = size, .content = std::move(content)};
+		return {.size = stream.total_in, .content = std::move(content)};
 	}
 
 	std::uint32_t gzipSizeField(const std::span<const std::byte> member)
