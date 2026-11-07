@@ -25,16 +25,15 @@ namespace
 		return library;
 	}
 
-	template <typename Function>
-	Function systemFunction(const char* name)
+	// Export only keys the template: each forwarded function gets its own instantiation, so its own cached address.
+	template <auto Export, typename... Args>
+	HRESULT callSystem(const char* name, Args... args)
 	{
-		const HMODULE library = systemLibrary();
-		return library ? reinterpret_cast<Function>(GetProcAddress(library, name)) : nullptr;
-	}
-
-	template <typename Function, typename... Args>
-	HRESULT callSystem(const Function function, Args... args)
-	{
+		static const auto function = [name]() -> decltype(Export)
+		{
+			const HMODULE library = systemLibrary();
+			return library ? reinterpret_cast<decltype(Export)>(GetProcAddress(library, name)) : nullptr;
+		}();
 		return function ? function(args...) : HRESULT_FROM_WIN32(ERROR_PROC_NOT_FOUND);
 	}
 }
@@ -42,44 +41,37 @@ namespace
 HRESULT WINAPI MFCreateSourceReaderFromMediaSource(IMFMediaSource* source, IMFAttributes* attributes,
                                                    IMFSourceReader** reader)
 {
-	static const auto function = systemFunction<decltype(&MFCreateSourceReaderFromMediaSource)>(__func__);
-	return callSystem(function, source, attributes, reader);
+	return callSystem<&MFCreateSourceReaderFromMediaSource>(__func__, source, attributes, reader);
 }
 
 HRESULT WINAPI MFCreateSourceReaderFromURL(LPCWSTR url, IMFAttributes* attributes, IMFSourceReader** reader)
 {
-	static const auto function = systemFunction<decltype(&MFCreateSourceReaderFromURL)>(__func__);
-	return callSystem(function, url, attributes, reader);
+	return callSystem<&MFCreateSourceReaderFromURL>(__func__, url, attributes, reader);
 }
 
 HRESULT WINAPI MFCreateSourceReaderFromByteStream(IMFByteStream* stream, IMFAttributes* attributes,
                                                   IMFSourceReader** reader)
 {
-	static const auto function = systemFunction<decltype(&MFCreateSourceReaderFromByteStream)>(__func__);
-	return callSystem(function, stream, attributes, reader);
+	return callSystem<&MFCreateSourceReaderFromByteStream>(__func__, stream, attributes, reader);
 }
 
 HRESULT WINAPI MFCreateSinkWriterFromURL(LPCWSTR url, IMFByteStream* stream, IMFAttributes* attributes,
                                          IMFSinkWriter** writer)
 {
-	static const auto function = systemFunction<decltype(&MFCreateSinkWriterFromURL)>(__func__);
-	return callSystem(function, url, stream, attributes, writer);
+	return callSystem<&MFCreateSinkWriterFromURL>(__func__, url, stream, attributes, writer);
 }
 
 HRESULT WINAPI MFCreateSinkWriterFromMediaSink(IMFMediaSink* sink, IMFAttributes* attributes, IMFSinkWriter** writer)
 {
-	static const auto function = systemFunction<decltype(&MFCreateSinkWriterFromMediaSink)>(__func__);
-	return callSystem(function, sink, attributes, writer);
+	return callSystem<&MFCreateSinkWriterFromMediaSink>(__func__, sink, attributes, writer);
 }
 
 HRESULT WINAPI DllGetClassObject(REFCLSID classId, REFIID interfaceId, LPVOID* object)
 {
-	static const auto function = systemFunction<decltype(&DllGetClassObject)>(__func__);
-	return callSystem(function, classId, interfaceId, object);
+	return callSystem<&DllGetClassObject>(__func__, classId, interfaceId, object);
 }
 
 HRESULT WINAPI DllCanUnloadNow()
 {
-	static const auto function = systemFunction<decltype(&DllCanUnloadNow)>(__func__);
-	return callSystem(function);
+	return callSystem<&DllCanUnloadNow>(__func__);
 }
